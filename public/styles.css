@@ -9,7 +9,7 @@
   --green-dark: #496740;
   --orange: #d3804d;
   --blue: #678fa0;
-  font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP", sans-serif;
   color: var(--ink);
   background: var(--cream);
 }
@@ -390,3 +390,16 @@ button:focus-visible, textarea:focus-visible, select:focus-visible, input:focus-
   .scene-hotspot { font-size: 8px; min-width: 23px; min-height: 15px; }
   .api-service-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
+
+/* Japanese labels need room to wrap, including on narrow screens. */
+.brand, .brand > div, .setup-choice > span, .provider-toggle > span { min-width: 0; }
+.brand h1, .brand p, .setup-choice strong, .setup-choice small,
+.settings-card-title h4, .member-head strong, .provider-toggle > span,
+.panel-title h2, .panel-meta, .agent-name { overflow-wrap: anywhere; white-space: normal; }
+.settings-card-title, .provider-actions, .member-head, .settings-footer { flex-wrap: wrap; }
+.settings-card-title > h4, .member-head > strong { min-width: 0; }
+.settings-footer > span { flex: 1 1 180px; }
+.settings-footer > div { display: flex; flex-wrap: wrap; gap: 8px; }
+#task-agent, #task-provider, #collaboration-mode { height: auto; min-height: 34px; }
+.scene-inline-actions, .scene-heading-actions { flex-wrap: wrap; }
+.small-action, .button, .settings-nav button, .scene-mini-grid button { overflow-wrap: anywhere; line-height: 1.5; }

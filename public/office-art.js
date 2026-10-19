@@ -1,3 +1,161 @@
+// Translate built-in display text only; keep API payloads and user content unchanged.
+const displayTranslations = new Map([
+  ["松果办公室","まつぼっくりオフィス"],
+  ["一间会认真干活的像素小屋","みんなが真剣に働く、小さなピクセルオフィス"],
+  ["枫叶街 · 3 号","もみじ通り · 3番地"],
+  ["栗栗","クリリ"],
+  ["阿松","マツ"],
+  ["米米","ミミ"],
+  ["灰灰","ハイハイ"],
+  ["夜灯","ヨアカリ"],
+  ["团团","タンタン"],
+  ["协调员","コーディネーター"],
+  ["资料员","リサーチ担当"],
+  ["写作者","ライター"],
+  ["制作员","制作担当"],
+  ["检查员","レビュー担当"],
+  ["文件员","ファイル管理担当"],
+  ["规划与协调","計画と調整"],
+  ["资料研究与分析","調査と分析"],
+  ["写作与创意","文章作成とアイデア"],
+  ["开发与制作","開発と制作"],
+  ["检查与审核","確認とレビュー"],
+  ["文件与资料整理","ファイルと資料の整理"],
+  ["本地 Ollama","ローカルOllama"],
+  ["写活动文案","イベントの紹介文を書く"],
+  ["做待办网页","ToDoページを作る"],
+  ["自由活动","自由時間"],
+  ["已完成","完了"],
+  ["执行中断","実行中断"],
+  ["分工完成","分担決定"],
+  ["独立处理","単独で実行"],
+  ["判断任务与分工","タスクと分担を検討"],
+  ["独立完成任务","単独でタスクを実行"],
+  ["汇总小队结果","チームの結果をまとめる"],
+  ["并行处理任务","並行してタスクを実行"],
+  ["正在判断任务复杂度与分工…","タスクの複雑さと分担を検討中…"],
+  ["已根据任务内容安排执行方式。","タスクに合わせて実行方法を決定しました。"],
+  ["任务只要求一个简短结果，一位成员即可完成。","短い回答を求めるタスクなので、1人で実行します。"],
+  ["任务完成，可以查看结果。","タスクが完了しました。結果を確認できます。"],
+  ["任务已取消。","タスクをキャンセルしました。"],
+  ["服务重启，任务已中断。","サーバーの再起動によりタスクが中断されました。"],
+  ["Codex 报告任务失败。","Codexがタスクの失敗を報告しました。"],
+  ["设置格式不正确。","設定の形式が正しくありません。"],
+  ["工作动画最短时长不正确。","作業アニメーションの最短時間が正しくありません。"],
+  ["LOGO 仅支持 PNG、JPEG 或 WebP 图片。","ロゴはPNG、JPEG、WebP画像に対応しています。"],
+  ["执行器需在 1 到 20 个之间。","実行エンジンは1〜20件で設定してください。"],
+  ["执行器 ID 重复或格式不正确。","実行エンジンIDが重複しているか、形式が正しくありません。"],
+  ["执行器类型不支持。","対応していない実行エンジンの種類です。"],
+  ["自定义 HTTP 的请求头和请求体须为有效 JSON。","カスタムHTTPのヘッダーと本文には有効なJSONを指定してください。"],
+  ["命令参数模式须包含 {{prompt}}。","引数で渡す場合は{{prompt}}を含めてください。"],
+  ["命令超时须在 10 到 3600 秒之间。","タイムアウトは10〜3600秒で指定してください。"],
+  ["至少启用一个执行器。","実行エンジンを1つ以上有効にしてください。"],
+  ["小队人数需在 1 到 8 人之间。","メンバーは1〜8人で設定してください。"],
+  ["成员 ID 重复或格式不正确。","メンバーIDが重複しているか、形式が正しくありません。"],
+  ["成员外观不正确。","メンバーの外観設定が正しくありません。"],
+  ["默认成员不存在。","既定のメンバーが存在しません。"],
+  ["快捷任务最多 12 条。","定型タスクは最大12件です。"],
+  ["快捷任务 ID 重复或格式不正确。","定型タスクIDが重複しているか、形式が正しくありません。"],
+  ["快捷任务引用了未启用的执行器。","定型タスクに無効な実行エンジンが指定されています。"],
+  ["本地模型没有返回可显示的内容。","ローカルモデルから表示可能な内容が返されませんでした。"],
+  ["执行器响应超过 2 MB。","実行エンジンの応答が2 MBを超えました。"],
+  ["并行成员都未能完成任务，请查看各成员步骤。","全員の並行作業が失敗しました。各メンバーのステップを確認してください。"],
+  ["请求过长。","リクエストが長すぎます。"],
+  ["请求格式不是有效 JSON。","リクエストが有効なJSONではありません。"],
+  ["Hermes 启动脚本不存在，请检查安装位置。","Hermesの起動スクリプトがありません。インストール先を確認してください。"],
+  ["Hermes 程序文件不存在，请检查安装。","Hermesのプログラムがありません。インストールを確認してください。"],
+  ["Hermes 依赖的 Python 3.11 已不存在，请先修复 Hermes 安装。","Hermesに必要なPython 3.11がありません。インストールを修復してください。"],
+  ["Hermes 的 Python 环境不完整，请先修复安装。","HermesのPython環境が不完全です。インストールを修復してください。"],
+  ["找不到 Claude Code，请先安装并确认 claude --version 可以运行。","Claude Codeが見つかりません。インストールして claude --version が動作することを確認してください。"],
+  ["Claude Code 尚未登录，请先运行 claude auth login。","Claude Codeにログインしていません。claude auth login を実行してください。"],
+  ["禁止访问。","アクセスできません。"],
+  ["文件不存在。","ファイルが存在しません。"],
+  ["文件路径不在工作区。","作業フォルダー外のファイルにはアクセスできません。"],
+  ["只可预览 120 KB 内的文本文件。","プレビューできるのは120 KB以内のテキストファイルです。"],
+  ["当前文件类型不支持文本预览。","このファイル形式はテキストプレビューに対応していません。"],
+  ["黑板最多保存 24 条计划。","黒板に保存できる予定は最大24件です。"],
+  ["计划 ID 不可重复。","予定のIDは重複できません。"],
+  ["请等当前任务结束再保存设置。","現在のタスクが終了してから設定を保存してください。"],
+  ["API 密钥过长。","APIキーが長すぎます。"],
+  ["请等当前任务结束。","現在のタスクが終了するまでお待ちください。"],
+  ["任务内容需在 1 到 2000 字之间。","タスクは1〜2000文字で入力してください。"],
+  ["指定的小队成员不存在。","指定したメンバーが存在しません。"],
+  ["执行器不存在或未启用。","実行エンジンが存在しないか、無効になっています。"],
+  ["协作成员需为 1 到 7 位。","共同作業のメンバーは1〜7人で指定してください。"],
+  ["协作成员不能重复主办成员。","共同作業のメンバーを重複させたり、主担当と同じにしたりすることはできません。"],
+  ["协作成员不存在。","共同作業のメンバーが存在しません。"],
+  ["请选择至少一位协作成员。","共同作業のメンバーを1人以上選んでください。"],
+  ["没有正在运行的任务。","実行中のタスクはありません。"],
+  ["用户取消任务。","ユーザーがタスクをキャンセルしました。"],
+  ["接口不存在。","APIが存在しません。"],
+  ["LOGO 图片","ロゴ画像"],
+  ["办公室名称","オフィス名"],
+  ["副标题","サブタイトル"],
+  ["场景角标","オフィスの所在地"],
+  ["LOGO 图标","ロゴアイコン"],
+  ["执行器 ID","実行エンジンID"],
+  ["执行器名称","実行エンジン名"],
+  ["执行器长期要求","実行エンジンへの継続的な指示"],
+  ["服务地址","サービスのURL"],
+  ["模型名称","モデル名"],
+  ["密钥环境变量名","APIキーの環境変数名"],
+  ["接口地址","APIのURL"],
+  ["请求头 JSON","リクエストヘッダーJSON"],
+  ["请求体 JSON","リクエスト本文JSON"],
+  ["结果字段路径","結果フィールドのパス"],
+  ["命令程序","実行コマンド"],
+  ["命令参数","コマンド引数"],
+  ["成员 ID","メンバーID"],
+  ["成员名称","メンバー名"],
+  ["成员职位","メンバーの役職"],
+  ["成员专长","メンバーの得意分野"],
+  ["派工关键词","振り分けキーワード"],
+  ["成员长期要求","メンバーへの継続的な指示"],
+  ["快捷任务 ID","定型タスクID"],
+  ["快捷任务名称","定型タスク名"],
+  ["快捷任务内容","定型タスクの内容"],
+  ["计划 ID","予定ID"],
+  ["计划内容","予定の内容"]
+]);
+export function displayText(value) {
+  const text = String(value ?? '');
+  return displayTranslations.get(text) ?? text;
+}
+
+export function systemText(value) {
+  const text = String(value ?? '');
+  if (displayTranslations.has(text)) return displayText(text);
+  const rules = [
+    [/^(.+)长度不符合要求。$/, (_, label) => displayText(label) + "の文字数が条件に合っていません。"],
+    [/^(.+)须以 http:\/\/ 或 https:\/\/ 开头。$/, (_, label) => displayText(label) + "はhttp://またはhttps://で始めてください。"],
+    [/^Ollama 返回 (\d+)$/, (_, status) => "Ollamaの応答：" + status],
+    [/^接力 (\d+\/\d+)$/, (_, count) => `リレー作業 ${count}`],
+    [/^(.+)开始：(.+)$/, (_, name, title) => `${displayText(name)}が開始：${systemText(title)}`],
+    [/^(.+)完成了「(.+)」$/, (_, name, title) => `${displayText(name)}が「${systemText(title)}」を完了しました`],
+    [/^(.+) 正在使用 (.+?)(，已收到其他成员的结果)?。$/, (_, name, provider, context) => `${displayText(name)}が${displayText(provider)}を使用中です。${context ? '他のメンバーの結果を受け取りました。' : ''}`],
+    [/^(.+) 未完成：([\s\S]*)$/, (_, name, error) => `${displayText(name)}の作業が未完了：${systemText(error)}`],
+    [/^正在运行：([\s\S]*)$/, (_, command) => `実行中：${command}`],
+    [/^命令结束，退出码 (.+)$/, (_, code) => `コマンド終了、終了コード：${code === '未知' ? '不明' : code}`],
+    [/^自动分工：([\s\S]*)$/, (_, reason) => `自動分担：${displayText(reason)}`],
+    [/^自动分工没有得到有效结果，已交给 (.+) 独立处理。$/, (_, name) => `自動分担を決定できなかったため、${displayText(name)}が単独で実行します。`],
+    [/^成员「(.+)」需要绑定已启用的执行器。$/, (_, name) => `メンバー「${displayText(name)}」に有効な実行エンジンを割り当ててください。`],
+    [/^(.+) 未连接。请检查服务地址与本地模型。$/, (_, name) => `${displayText(name)}に接続できません。サービスのURLとローカルモデルを確認してください。`],
+    [/^(.+) 已连接，但还没有可用模型。$/, (_, name) => `${displayText(name)}に接続しましたが、利用可能なモデルがありません。`],
+    [/^设置的模型 (.+) 未安装，请到设置中重新选择。$/, (_, model) => `モデル ${model} はインストールされていません。設定で選び直してください。`],
+    [/^(.+) 返回的内容不是 JSON。$/, (_, name) => `${displayText(name)}の応答がJSONではありません。`],
+    [/^(.+) 没有返回可显示的内容。$/, (_, name) => `${displayText(name)}から表示可能な内容が返されませんでした。`],
+    [/^(.+) 的结果字段「(.+)」为空，请检查路径。$/, (_, name, field) => `${displayText(name)}の結果フィールド「${field}」が空です。パスを確認してください。`],
+    [/^(.+) 超过 (\d+) 秒仍未完成。$/, (_, name, seconds) => `${displayText(name)}が${seconds}秒以内に完了しませんでした。`],
+    [/^无法启动 (.+)：([\s\S]*)$/, (_, name, detail) => `${displayText(name)}を起動できません：${detail}`],
+    [/^(.+) 输出超过 2 MB。$/, (_, name) => `${displayText(name)}の出力が2 MBを超えました。`],
+    [/^(.+) 退出码 (.+)。([\s\S]*)$/, (_, name, code, detail) => `${displayText(name)}の終了コード：${code}。${detail}`],
+    [/^(.+) 返回 (\d+)：([\s\S]*)$/, (_, name, status, detail) => `${displayText(name)}の応答：${status}：${detail}`],
+    [/^本地模型请求失败：([\s\S]*)$/, (_, detail) => `ローカルモデルへのリクエストに失敗しました：${detail}`],
+  ];
+  for (const [pattern, translate] of rules) if (pattern.test(text)) return text.replace(pattern, translate);
+  return text;
+}
+
 const WIDTH = 480;
 const HEIGHT = 304;
 
@@ -80,9 +238,9 @@ function outline(ctx, x, y, w, h, color = '#6a5137') {
 }
 
 function label(ctx, text, x, y, color = '#5e513e', size = 7) {
-  ctx.font = `bold ${size}px "Microsoft YaHei", sans-serif`;
+  ctx.font = `bold ${size}px "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif`;
   ctx.fillStyle = color;
-  ctx.fillText(text, x, y);
+  ctx.fillText(displayText(text), x, y);
 }
 
 function drawFloor(ctx, night) {
@@ -143,9 +301,9 @@ function drawWall(ctx, night, officeName) {
   pixel(ctx, 185, 12, 104, 27, '#6b7654');
   pixel(ctx, 189, 15, 96, 21, '#e8d5a7');
   outline(ctx, 189, 15, 96, 21, '#9c7854');
-  const sign = Array.from(officeName || '松果办公室').slice(0, 16).join('');
+  const sign = Array.from(displayText(officeName || 'まつぼっくりオフィス')).slice(0, 16).join('');
   const fontSize = Math.min(9, Math.max(5, Math.floor(88 / Math.max(sign.length, 1))));
-  ctx.font = `bold ${fontSize}px "Microsoft YaHei", sans-serif`;
+  ctx.font = `bold ${fontSize}px "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif`;
   ctx.fillStyle = '#4f5b42';
   ctx.fillText(sign, 237 - ctx.measureText(sign).width / 2, 28);
   pixel(ctx, 0, 0, 5, HEIGHT, '#8f6848');
@@ -203,7 +361,7 @@ function drawNoticeBoard(ctx) {
   pixel(ctx, 34, 75, 17, 8, '#d8e8cd');
   pixel(ctx, 34, 86, 14, 11, '#fae4c6');
   for (const [x,y] of [[24,76],[43,75],[41,87]]) pixel(ctx, x, y, 2, 2, '#c26d4e');
-  label(ctx, '今日计划', 17, 115, '#6d704f', 7);
+  label(ctx, '今日の予定', 17, 115, '#6d704f', 7);
 }
 
 function drawKitchen(ctx) {
@@ -232,7 +390,7 @@ function drawKitchen(ctx) {
   pixel(ctx, 460, 85, 2, 8, '#8c8270');
   pixel(ctx, 375, 128, 17, 10, '#ae754e');
   pixel(ctx, 407, 128, 17, 10, '#ae754e');
-  label(ctx, '茶水间', 350, 153, '#537052', 7);
+  label(ctx, '給湯室', 350, 153, '#537052', 7);
 }
 
 function drawLounge(ctx) {
@@ -250,7 +408,7 @@ function drawLounge(ctx) {
   pixel(ctx, 426, 226, 33, 6, '#d6a478');
   pixel(ctx, 437, 222, 13, 5, '#f3e3b8');
   drawPlant(ctx, 451, 279, 1);
-  label(ctx, '休息角', 348, 289, '#4e7167', 7);
+  label(ctx, '休憩スペース', 348, 289, '#4e7167', 7);
 }
 
 function drawMeeting(ctx) {
@@ -266,7 +424,7 @@ function drawMeeting(ctx) {
     pixel(ctx, x - 4, 262, 12, 14, '#5d704f');
     pixel(ctx, x - 6, 265, 16, 8, '#82936a');
   }
-  label(ctx, '小队会议桌', 23, 258, '#496644', 7);
+  label(ctx, 'チームの会議テーブル', 23, 258, '#496644', 7);
 }
 
 function drawDecor(ctx, desks) {
@@ -291,7 +449,7 @@ function darken(hex, factor) {
 }
 
 function drawNameTag(ctx, agent, x, y, working) {
-  const width = Math.max(29, Math.min(70, Array.from(agent.name || '').length * 7 + 13));
+  const width = Math.max(29, Math.min(70, Array.from(displayText(agent.name || '')).length * 7 + 13));
   pixel(ctx, x - width / 2, y, width, 8, working ? '#fbe7b5' : '#fff8df');
   outline(ctx, x - width / 2, y, width, 8, working ? '#a5794d' : '#80765e');
   pixel(ctx, x - width / 2 + 3, y + 3, 3, 3, working ? '#e7a75b' : '#8db67f');
@@ -386,11 +544,11 @@ function drawSeatedAnimal(ctx, agent, x, y, now, selected, working) {
 }
 
 const INTERACTIVE_ZONES = [
-  { id: 'board', label: '今日计划', x: 10, y: 68, w: 52, h: 51 },
-  { id: 'meeting', label: '小队会议桌', x: 23, y: 250, w: 286, h: 45 },
-  { id: 'shelf', label: '工作区书架', x: 12, y: 173, w: 46, h: 68 },
-  { id: 'kitchen', label: '茶水间', x: 338, y: 57, w: 136, h: 106 },
-  { id: 'lounge', label: '休息角', x: 339, y: 181, w: 132, h: 113 },
+  { id: 'board', label: '今日の予定', x: 10, y: 68, w: 52, h: 51 },
+  { id: 'meeting', label: 'チームの会議テーブル', x: 23, y: 250, w: 286, h: 45 },
+  { id: 'shelf', label: '作業フォルダーの本棚', x: 12, y: 173, w: 46, h: 68 },
+  { id: 'kitchen', label: '給湯室', x: 338, y: 57, w: 136, h: 106 },
+  { id: 'lounge', label: '休憩スペース', x: 339, y: 181, w: 132, h: 113 },
 ];
 
 export function startOffice(canvas, onSelect, onZone) {
@@ -400,7 +558,7 @@ export function startOffice(canvas, onSelect, onZone) {
   const entities = new Map();
   let agents = [];
   let desks = [];
-  let brand = { name: '松果办公室' };
+  let brand = { name: 'まつぼっくりオフィス' };
   let scene = { time: 'auto', wander: true };
   let selectedId = null;
   let previous = performance.now();
@@ -464,19 +622,19 @@ export function startOffice(canvas, onSelect, onZone) {
       .filter(item => item.pos)
       .sort((a, b) => Math.hypot(a.pos.x - x, a.pos.y - 17 - y) - Math.hypot(b.pos.x - x, b.pos.y - 17 - y))[0];
     if (closest && Math.hypot(closest.pos.x - x, closest.pos.y - 17 - y) < 20) {
-      return { agentId: closest.id, label: agents.find(agent => agent.id === closest.id)?.name || '小队成员' };
+      return { agentId: closest.id, label: displayText(agents.find(agent => agent.id === closest.id)?.name || 'チームメンバー') };
     }
     const zone = INTERACTIVE_ZONES.find(item => x >= item.x && x <= item.x + item.w && y >= item.y && y <= item.y + item.h);
     if (zone) return { zoneId: zone.id, label: zone.label };
     const deskIndex = desks.findIndex(desk => Math.abs(x - desk.x) <= 31 && y >= desk.y - 56 && y <= desk.y + 5);
-    if (deskIndex >= 0 && agents[deskIndex]) return { agentId: agents[deskIndex].id, label: `${agents[deskIndex].name}的工位` };
+    if (deskIndex >= 0 && agents[deskIndex]) return { agentId: agents[deskIndex].id, label: `${displayText(agents[deskIndex].name)}のデスク` };
     return null;
   }
 
   canvas.addEventListener('mousemove', event => {
     const hit = hitAt(event);
     canvas.style.cursor = hit ? 'pointer' : 'default';
-    canvas.title = hit ? `点击打开${hit.label}` : '点击角色或房间设施';
+    canvas.title = hit ? `クリックして開く：${hit.label}` : 'キャラクターや設備をクリック';
   });
   canvas.addEventListener('click', event => {
     const hit = hitAt(event);
